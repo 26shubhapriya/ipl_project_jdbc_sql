@@ -1,0 +1,39 @@
+mysql queries
+
+select season , count(season) from matchestable group by season;
+
+select winner , count(winner) from matchestable group by winner;
+
+select bowling_team, sum(extra_runs) from deliveries_1 where match_id in(select id from matchestable where season=2016) group by bowling_team;
+
+
+select bowler,(sum(total_runs) / ((sum(overs)*6+sum(ball))/6)) as economy from deliveries_1 where match_id in (select id from matchestable where season=2015) group by bowler order by economy desc limit 1;
+
+
+SELECT toss_winner, count(toss_winner) from matchestable group by toss_winner;
+
+postgresql
+1)SELECT season,count(*)
+FROM matches
+GROUP BY season
+ORDER BY season;
+
+2)SELECT winner,COUNT(*)
+FROM matches
+WHERE NOT winner = ''
+GROUP BY winner 
+ORDER BY winner;
+
+3)SELECT deliveries.bowling_team,sum(deliveries.extra_runs) AS Total_Extra_runs 
+FROM deliveries 
+INNER JOIN matches ON deliveries.match_id = matches.id
+WHERE matches.season=2016
+GROUP BY deliveries.bowling_team;
+
+4)SELECT deliveries.bowler,sum((deliveries.wide_runs + deliveries.noball_runs + deliveries.batsman_runs)*6)/count(deliveries.bowler) AS Economy
+FROM deliveries
+INNER JOIN matches ON matches.id = deliveries.match_id
+WHERE matches.season = 2016
+GROUP BY deliveries.bowler
+ORDER BY Economy ASC;
+
